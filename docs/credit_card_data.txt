@@ -1,0 +1,14 @@
+card_id: string
+customer_id: string
+account_id: string
+card_type: string (visa, mastercard, amex)
+card_status: string (active, blocked, expired)
+issue_date: date
+expiry_date: date
+credit_limit: decimal
+current_balance: decimal
+available_credit: decimal
+last_payment_date: date
+last_payment_amount: decimal
+interest_rate: float
+reward_points: integer

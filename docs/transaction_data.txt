@@ -1,0 +1,13 @@
+transaction_id: string
+account_id: string
+transaction_date: timestamp
+transaction_type: string (deposit, withdrawal, transfer, payment)
+amount: decimal
+currency: string
+description: string
+merchant_name: string
+merchant_category: string
+transaction_status: string (completed, pending, failed, reversed)
+channel: string (online, mobile, branch, atm)
+location: string
+is_international: boolean

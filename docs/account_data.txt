@@ -1,0 +1,11 @@
+account_id: string
+customer_id: string
+account_type: string (checking, savings, investment)
+account_status: string (active, closed, suspended)
+open_date: date
+close_date: date
+currency: string
+branch_id: string
+interest_rate: float
+balance: decimal
+last_activity_date: date

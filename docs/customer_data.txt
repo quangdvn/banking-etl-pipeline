@@ -1,0 +1,14 @@
+customer_id: string
+first_name: string
+last_name: string
+date_of_birth: date
+email: string
+phone_number: string
+address: string
+city: string
+state: string
+zip_code: string
+country: string
+customer_since: date
+credit_score: integer
+risk_segment: string

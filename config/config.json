@@ -1,0 +1,87 @@
+{
+  "app_name": "Banking ETL Pipeline",
+  "environment": "production",
+  "pipelines_to_run": ["customer", "account", "transaction"],
+
+  "s3": {
+    "bucket_name": "banking-data-lake",
+    "region": "us-east-1"
+  },
+
+  "rds": {
+    "jdbc_url": "jdbc:mysql://banking-db.cluster-xyz.us-east-1.rds.amazonaws.com:3306/banking",
+    "username": "${RDS_USERNAME}",
+    "password": "${RDS_PASSWORD}"
+  },
+
+  "redshift": {
+    "jdbc_url": "jdbc:redshift://banking-warehouse.xyz.us-east-1.redshift.amazonaws.com:5439/banking",
+    "username": "${REDSHIFT_USERNAME}",
+    "password": "${REDSHIFT_PASSWORD}"
+  },
+
+  "pipelines": {
+    "customer": {
+      "source_type": "s3",
+      "source_path": "raw/customers/",
+      "target_type": "redshift",
+      "target_table": "dim_customer",
+      "key_columns": ["customer_id"],
+      "fail_on_quality_check": true,
+      "data_quality": {
+        "table_name": "dim_customer",
+        "required_columns": ["customer_id", "first_name", "last_name", "email"],
+        "key_columns": ["customer_id"],
+        "range_checks": {
+          "credit_score": [300, 850]
+        }
+      }
+    },
+
+    "account": {
+      "source_type": "rds",
+      "source_table": "accounts",
+      "target_type": "redshift",
+      "target_table": "dim_account",
+      "key_columns": ["account_id"],
+      "fail_on_quality_check": true,
+      "data_quality": {
+        "table_name": "dim_account",
+        "required_columns": [
+          "account_id",
+          "customer_id",
+          "account_type",
+          "open_date"
+        ],
+        "key_columns": ["account_id"],
+        "range_checks": {
+          "balance": [0, 10000000],
+          "interest_rate": [0, 30]
+        }
+      }
+    },
+
+    "transaction": {
+      "source_type": "s3",
+      "source_path": "raw/transactions/",
+      "target_type": "s3",
+      "target_path": "processed/transactions/",
+      "write_mode": "append",
+      "partition_cols": ["transaction_year", "transaction_month"],
+      "fail_on_quality_check": false,
+      "data_quality": {
+        "table_name": "fact_transaction",
+        "required_columns": [
+          "transaction_id",
+          "account_id",
+          "transaction_date",
+          "amount"
+        ],
+        "key_columns": ["transaction_id"],
+        "range_checks": {
+          "amount": [0, 1000000]
+        }
+      }
+    }
+  }
+}
